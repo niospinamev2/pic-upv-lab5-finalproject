@@ -18,6 +18,9 @@ class MMI_EME:
         wvl=1.55,
         mat_core=mat.sin(1.55),
         mat_cladd=mat.sio2(1.55),
+        mat_shallow=mat.sio2(1.55), #así está en 0
+        sh_width = 0, 
+        sh_thickness = 0, 
         polarization="TE",
         n_IN=2,
         IN_WVG_positions=(-1, 1),
@@ -26,6 +29,7 @@ class MMI_EME:
         power_IN=(1, 0),
         wg_width=1.0,
         wg_num_modes=2,
+        wg_thickness = 0.22,
         MMI_width=6.0,
         MMI_num_modes=20,
         dz=0.05,
@@ -39,6 +43,9 @@ class MMI_EME:
         self.wvl = wvl
         self.mat_core = mat_core
         self.mat_cladd = mat_cladd
+        self.mat_shallow = mat_shallow
+        self.sh_width = sh_width
+        self.sh_thickness = sh_thickness
         self.polarization = polarization
         self.n_IN = n_IN
         self.IN_WVG_positions = list(IN_WVG_positions)
@@ -47,6 +54,7 @@ class MMI_EME:
         self.power_IN_config = list(power_IN)
         self.wg_width = wg_width
         self.wg_num_modes = wg_num_modes
+        self.wg_thickness = wg_thickness
         self.MMI_width = MMI_width
         self.MMI_num_modes = MMI_num_modes
         self.dz = dz
@@ -103,6 +111,11 @@ class MMI_EME:
 
         self.MMI_modes, self.MMI_basis = waveguide(
             wg_width=self.MMI_width,
+            wg_thickness=self.wg_thickness,
+            mat_core=self.mat_core,
+            mat_shallow = self.mat_shallow,
+            sh_width = self.sh_width,
+            sh_thickness = self.sh_thickness,
             wvl=self.wvl,
             num_modes=self.MMI_num_modes,
             XY=self.XY,
@@ -135,7 +148,7 @@ class MMI_EME:
         if self.VERBOSE:
             print(f"TE number: {n_TE}, TM number: {n_TM}, n_all: {n_all}")
 
-        self.slice_modes_1D(MMI_modes_TE, MMI_modes_TM, n_TE, n_TM, x0, x1)
+        self.slice_modes_1D(MMI_modes_TE, MMI_modes_TM, n_TE, n_TM, x0, x1)        
         self.L_pi_2D = 0.5 * self.wvl / np.real(self.MMI_modes_pol[0].n_eff - self.MMI_modes_pol[1].n_eff)
 
         if self.VERBOSE:
